@@ -1,0 +1,20 @@
+import { createContext } from "react";
+
+export const AppContext = createContext();
+
+export const AppProvider = ({children}) => {
+    const navigate = useNavigate();
+    const [user, setUser] = useState(null);
+    const [isSeller, setIsSeller] = useState(false);
+
+    const value = {navigate, user, setUser, setisSeller, isSeller}//data store
+    return (
+        <AppContext.Provider value={{}}>
+            {children}
+        </AppContext.Provider>
+    )
+}
+
+export const useAppContext = () => {
+return useContext(AppContext);
+}
