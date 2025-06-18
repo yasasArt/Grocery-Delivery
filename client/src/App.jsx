@@ -1,5 +1,6 @@
 import React from 'react'
 import Navbar from './components/Navbar'
+import Footer from './components/Footer' // Make sure to import the Footer component
 import { Route, Routes, useLocation } from 'react-router-dom'
 import Home from './pages/Home'
 import { ToastContainer } from 'react-toastify'
@@ -19,6 +20,8 @@ const App = () => {
           {/* Add other routes here */}
         </Routes>
       </div>
+
+      {!isSellerPath && <Footer />} {/* Added the same condition as Navbar */}
 
       {/* Toast Container - should be at root level */}
       <ToastContainer
