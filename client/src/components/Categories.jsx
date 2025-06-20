@@ -1,16 +1,16 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
+export const categories = [
+  { name: 'fruit', image: 'fruit.jpeg', path: 'fruit', text: 'Fruits' },
+  { name: 'vegetable', image: 'vegitable.jpeg', path: 'vegetable', text: 'Vegetables' },
+  { name: 'milk', image: 'milk.jpeg', path: 'milk', text: 'Dairy Products' },
+  { name: 'cold', image: 'cold.jpeg', path: 'cold', text: 'Cold Items' },
+  { name: 'seeds', image: 'seeds.jpeg', path: 'seeds', text: 'Seeds' },
+];
+
 const Categories = () => {
   const navigate = useNavigate();
-
-  const categories = [
-    { name: 'fruit', image: 'fruit.jpeg', path: 'fruit' },
-    { name: 'vegetable', image: 'vegitable.jpeg', path: 'vegetable' },
-    { name: 'milk', image: 'milk.jpeg', path: 'milk' },
-    { name: 'cold', image: 'cold.jpeg', path: 'cold' },
-    { name: 'seeds', image: 'seeds.jpeg', path: 'seeds' },
-  ];
 
   const handleCategoryClick = (path) => {
     navigate(`/products/${path}`);
