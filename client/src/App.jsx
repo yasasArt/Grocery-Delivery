@@ -7,6 +7,7 @@ import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import Login from './components/Login' // Make sure to import your Login component
 import AllProducts from './pages/AllProducts' // Import your AllProducts page
+import ProductCategory from './pages/ProductCategory'
 
 
 const App = () => {
@@ -38,6 +39,7 @@ const App = () => {
           <Route path="/" element={<Home />} />
           {/* Add other routes here */}
           <Route path="/products" element={<AllProducts />} />
+          <Route path="/products/:category" element={<ProductCategory />} />
 
         </Routes>
       </div>
