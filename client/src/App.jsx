@@ -9,6 +9,7 @@ import Login from './components/Login' // Make sure to import your Login compone
 import AllProducts from './pages/AllProducts' // Import your AllProducts page
 import ProductCategory from './pages/ProductCategory'
 import ProductDetails from './pages/ProductDetails'
+import Cart from './pages/Cart'
 
 
 const App = () => {
@@ -43,6 +44,7 @@ const App = () => {
           <Route path="/products/:category" element={<ProductCategory />} />
           <Route path="/product/:id" element={<ProductDetails />} />
           <Route path="/product/:category/:id" element={<ProductDetails />} />
+          <Route path="/cart" element={<Cart />} />
 
         </Routes>
       </div>
