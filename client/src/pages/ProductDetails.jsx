@@ -152,6 +152,7 @@ const ProductDetails = () => {
                         <span className="text-gray-500/70">(inclusive of all taxes)</span>
                     </div>
 
+                    <p className="text-base font-medium mt-6">About Product details </p>
                     <ul className="list-disc ml-4 text-gray-500/70">
                         {product.description.map((desc, index) => (
                             <li key={index}>{desc}</li>
