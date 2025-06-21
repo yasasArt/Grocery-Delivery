@@ -1,10 +1,12 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const AllProducts = () => {
+  const navigate = useNavigate();
+  
   // Product categories with images
   const categories = [
-    { id: 1, name: 'Apples', image:"apple.jpeg", count: 24 },
+    { id: 1, name: 'Apples', image: "apple.jpeg", count: 24 },
     { id: 2, name: 'Bananas', image: 'banana.jpeg', count: 18 },
     { id: 3, name: 'Beets', image: 'beet.jpeg', count: 15 },
     { id: 4, name: 'Cabbage', image: 'cabbage.jpeg', count: 9 },
@@ -21,12 +23,18 @@ const AllProducts = () => {
   const searchParams = new URLSearchParams(location.search);
   const searchQuery = searchParams.get('search')?.toLowerCase() || '';
 
- // Filter categories based on search query
-const filteredCategories = searchQuery
-  ? categories.filter(category => 
-      category.name.toLowerCase().includes(searchQuery))  // Added missing parenthesis
-  : categories;
-  
+  // Filter categories based on search query
+  const filteredCategories = searchQuery
+    ? categories.filter(category => 
+        category.name.toLowerCase().includes(searchQuery))
+    : categories;
+
+  // Handle product click navigation
+  const handleProductClick = (productId) => {
+    navigate(`/product/${productId}`);
+    window.scrollTo(0, 0); // Scroll to top of the page
+  };
+
   return (
     <div className='mt-16 flex flex-col px-4 sm:px-6 lg:px-8'>
       <div className='flex flex-col items-end w-max'>
@@ -54,6 +62,7 @@ const filteredCategories = searchQuery
             {filteredCategories.map(category => (
               <div 
                 key={category.id}
+                onClick={() => handleProductClick(category.id)}
                 className='group border rounded-lg overflow-hidden hover:shadow-md transition-shadow cursor-pointer'
               >
                 <div className='h-40 bg-gray-100 overflow-hidden'>
@@ -61,6 +70,10 @@ const filteredCategories = searchQuery
                     src={`/images/${category.image}`} 
                     alt={category.name}
                     className='w-full h-full object-cover group-hover:scale-105 transition-transform'
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = '/images/placeholder.jpeg';
+                    }}
                   />
                 </div>
                 <div className='p-3'>

@@ -8,6 +8,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import Login from './components/Login' // Make sure to import your Login component
 import AllProducts from './pages/AllProducts' // Import your AllProducts page
 import ProductCategory from './pages/ProductCategory'
+import ProductDetails from './pages/ProductDetails'
 
 
 const App = () => {
@@ -40,6 +41,8 @@ const App = () => {
           {/* Add other routes here */}
           <Route path="/products" element={<AllProducts />} />
           <Route path="/products/:category" element={<ProductCategory />} />
+          <Route path="/product/:id" element={<ProductDetails />} />
+          <Route path="/product/:category/:id" element={<ProductDetails />} />
 
         </Routes>
       </div>
