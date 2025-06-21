@@ -1,28 +1,97 @@
 import { useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-
-const ProductDetails = () => {
-
-    const product = {
-        name: "Casual Shoes",
-        category: "Sports",
+const products = [
+    {
+        id: "1",
+        name: "Apple",
+        category: "fruit",
         price: 100,
         offerPrice: 80,
         rating: 4,
         images: [
-            "https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/card/productImage.png",
-            "https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/card/productImage2.png",
-            "https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/card/productImage3.png",
-            "https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/card/productImage4.png"
+            "/images/apple1.jpeg",
+            "/images/apple2.jpeg",
+            "/images/apple3.jpeg",
+            "/images/apple4.jpeg"
         ],
         description: [
             "High-quality material",
             "Comfortable for everyday use",
             "Available in different sizes"
         ]
-    };
+    },
+    {
+        id: "2",
+        name: "Banana",
+        category: "fruit",
+        price: 50,
+        offerPrice: 40,
+        rating: 4.5,
+        images: [
+            "/images/banana1.jpeg",
+            "/images/banana2.jpeg",
+            "/images/banana3.jpeg",
+            "/images/banana4.jpeg"
+        ],
+        description: [
+            "Rich in potassium",
+            "Great for smoothies",
+            "Perfect for snacking"
+        ]
+    },
+    {
+        id: "7",
+        name: "kivi",
+        category: "fruit",
+        price: 50,
+        offerPrice: 40,
+        rating: 4.5,
+        images: [
+            "/images/kivi1.jpeg",
+            "/images/kivi2.jpeg",
+            "/images/kivi3.jpeg",
+            "/images/kivi4.jpeg"
+        ],
+        description: [
+            "Rich in potassium",
+            "Great for smoothies",
+            "Perfect for snacking"
+        ]
+    }
+];
+
+const ProductDetails = () => {
+    const { id } = useParams();
+    const navigate = useNavigate();
+    const product = products.find(p => p.id === id) || products[0];
 
     const [thumbnail, setThumbnail] = useState(product.images[0]);
+
+    const addToCart = (productId) => {
+        // Here you would typically add the product to cart in your state management
+        // For now, we'll just show a toast message
+        toast.success(`${product.name} added to cart!`, {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        });
+        
+        return productId; // Return the product ID for consistency
+    };
+
+    const handleBuyNow = (productId) => {
+        addToCart(productId);
+        setTimeout(() => {
+            navigate('/cart'); // Navigate to cart page after showing the toast
+        }, 1000);
+    };
 
     return product && (
         <div className="max-w-6xl w-full px-6">
@@ -61,7 +130,7 @@ const ProductDetails = () => {
                                     1 0 0 0-.363-1.118L1.028 7.41c-.783-.57-.38-1.81.588-1.81h4.188a1 1 0 0 0 .95-.69z" fill="#008000" />
                                 </svg>
                             ) : (
-                                <svg width="14" height="13" viewBox="0 0 18 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <svg key={i} width="14" height="13" viewBox="0 0 18 17" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M8.04894 0.927049C8.3483 0.00573802 9.6517 0.00574017 9.95106 0.927051L11.2451
                                      4.90983C11.379 5.32185 
                                     11.763 5.60081 12.1962 5.60081H16.3839C17.3527 5.60081 17.7554 6.84043 16.9717 
@@ -70,7 +139,7 @@ const ProductDetails = () => {
                                      13.374 8.7627 13.374 8.41221 13.6287L5.02426 16.0902C4.24054 16.6596 3.18607 
                                      15.8934 3.48542 14.9721L4.7795 10.9894C4.91338 10.5773 4.76672 10.126 4.41623 
                                      9.87132L1.02827 7.40983C0.244561 6.84043 0.647338 5.60081 1.61606 5.60081H5.8038C6.23703 
-                                     5.60081 6.62099 5.32185 6.75486 4.90983L8.04894 0.927049Z" fill="#008000" fill-opacity="0.35" />
+                                     5.60081 6.62099 5.32185 6.75486 4.90983L8.04894 0.927049Z" fill="#008000" fillOpacity="0.35" />
                                 </svg>
                             )
                         ))}
@@ -91,10 +160,10 @@ const ProductDetails = () => {
                     </ul>
 
                     <div className="flex items-center mt-10 gap-4 text-base">
-                        <button className="w-full py-3.5 cursor-pointer font-medium bg-gray-100 text-gray-800/80 hover:bg-gray-200 transition" >
+                        <button onClick={() => addToCart(product.id)} className="w-full py-3.5 cursor-pointer font-medium bg-gray-100 text-gray-800/80 hover:bg-gray-200 transition" >
                             Add to Cart
                         </button>
-                        <button className="w-full py-3.5 cursor-pointer font-medium bg-green-500 text-white hover:bg-green-600 transition" >
+                        <button onClick={() => handleBuyNow(product.id)} className="w-full py-3.5 cursor-pointer font-medium bg-green-500 text-white hover:bg-green-600 transition" >
                             Buy now
                         </button>
                     </div>
