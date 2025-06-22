@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useAppContext } from "../context/AppContex";
 
 const products = [
     {
@@ -66,14 +67,31 @@ const products = [
 const ProductDetails = () => {
     const { id } = useParams();
     const navigate = useNavigate();
+    const { cartItems, setCartItems } = useAppContext();
     const product = products.find(p => p.id === id) || products[0];
 
     const [thumbnail, setThumbnail] = useState(product.images[0]);
 
     const addToCart = (productId) => {
-        // Here you would typically add the product to cart in your state management
-        // For now, we'll just show a toast message
-        toast.success(`${product.name} added to cart!`, {
+        const productToAdd = products.find(p => p.id === productId);
+        if (!productToAdd) return;
+
+        const existing = cartItems.find(item => item.id === productId);
+        let updatedCart;
+        
+        if (existing) {
+            updatedCart = cartItems.map(item =>
+                item.id === productId ? { ...item, quantity: (item.quantity || 1) + 1 } : item
+            );
+        } else {
+            updatedCart = [...cartItems, { 
+                ...productToAdd,
+                quantity: 1
+            }];
+        }
+        setCartItems(updatedCart);
+
+        toast.success(`${productToAdd.name} added to cart!`, {
             position: "top-right",
             autoClose: 3000,
             hideProgressBar: false,
@@ -82,15 +100,11 @@ const ProductDetails = () => {
             draggable: true,
             progress: undefined,
         });
-        
-        return productId; // Return the product ID for consistency
     };
 
     const handleBuyNow = (productId) => {
         addToCart(productId);
-        setTimeout(() => {
-            navigate('/cart'); // Navigate to cart page after showing the toast
-        }, 1000);
+        navigate('/cart');
     };
 
     return product && (
@@ -152,7 +166,6 @@ const ProductDetails = () => {
                         <span className="text-gray-500/70">(inclusive of all taxes)</span>
                     </div>
 
-                    <p className="text-base font-medium mt-6">About Product details </p>
                     <ul className="list-disc ml-4 text-gray-500/70">
                         {product.description.map((desc, index) => (
                             <li key={index}>{desc}</li>
