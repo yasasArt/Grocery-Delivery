@@ -10,7 +10,8 @@ import AllProducts from './pages/AllProducts' // Import your AllProducts page
 import ProductCategory from './pages/ProductCategory'
 import ProductDetails from './pages/ProductDetails'
 import Cart from './pages/Cart'
-
+import AddAddress from './pages/AddAddress'
+import SellerLogin from './components/seller/SellerLogin'
 
 const App = () => {
   const location = useLocation()
@@ -45,7 +46,8 @@ const App = () => {
           <Route path="/product/:id" element={<ProductDetails />} />
           <Route path="/product/:category/:id" element={<ProductDetails />} />
           <Route path="/cart" element={<Cart />} />
-
+          <Route path="/add-address" element={<AddAddress />} />
+          <Route path="/seller" element={<SellerLogin />} />
         </Routes>
       </div>
 

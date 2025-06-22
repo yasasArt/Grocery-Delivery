@@ -1,20 +1,28 @@
 import React, { useState } from 'react';
 import { useNavigate, NavLink } from 'react-router-dom';
-import { useAppContext } from '../context/AppContex'; // <-- import context
+import { useAppContext } from '../context/AppContex';
 
 const Navbar = ({ setShowLogin }) => {
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
-  const { getcartCount } = useAppContext(); // <-- get getcartCount from context
+  const { getcartCount, user, logout } = useAppContext();
 
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
       navigate(`/products?search=${encodeURIComponent(searchQuery)}`);
-      setSearchQuery(''); // Clear the search input
+      setSearchQuery('');
     }
   };
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
+
+  // Default profile image path
+  const defaultProfileImage = '/profilePicture.png'; // Make sure this path is correct
 
   return (
     <div>
@@ -52,19 +60,40 @@ const Navbar = ({ setShowLogin }) => {
             <button className="absolute -top-2 -right-3 text-xs text-white bg-green-500 w-[18px] h-[18px] rounded-full">{getcartCount()}</button>
           </div>
 
-          <button 
-            onClick={() => {
-              setShowLogin(true);
-              setOpen(false);
-            }} 
-            className="cursor-pointer px-8 py-2 bg-green-500 hover:bg-green-600 transition text-white rounded-full"
-          >
-            Login
-          </button>
+          {!user ? (
+            <button
+              onClick={() => {
+                setShowLogin(true);
+                setOpen(false);
+              }}
+              className="cursor-pointer px-6 py-2 bg-green-500 hover:bg-green-600 transition text-white rounded-full"
+            >
+              Login
+            </button>
+          ) : (
+            <div className="relative group flex items-center gap-2">
+              <div className="cursor-pointer" onClick={() => navigate('/profile')}>
+                <img 
+                  src={user.photoURL || defaultProfileImage} 
+                  alt="Profile" 
+                  className="w-8 h-8 rounded-full object-cover"
+                  onError={(e) => {
+                    e.target.onerror = null; 
+                    e.target.src = defaultProfileImage;
+                  }}
+                />
+              </div>
+              <div className="hidden group-hover:block absolute right-0 top-full mt-2 w-48 bg-white rounded-md shadow-lg z-10 py-1">
+                <div className="px-4 py-2 hover:bg-gray-100 cursor-pointer" onClick={() => navigate('/profile')}>My Profile</div>
+                <div className="px-4 py-2 hover:bg-gray-100 cursor-pointer" onClick={() => navigate('/orders')}>My Orders</div>
+                <div className="px-4 py-2 hover:bg-gray-100 cursor-pointer" onClick={handleLogout}>Logout</div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Mobile Menu */}
-        <button onClick={() => open ? setOpen(false) : setOpen(true)} aria-label="Menu" className="sm:hidden">
+        <button onClick={() => setOpen(!open)} aria-label="Menu" className="sm:hidden">
           <svg width="21" height="15" viewBox="0 0 21 15" fill="none" xmlns="http://www.w3.org/2000/svg">
             <rect width="21" height="1.5" rx=".75" fill="#426287" />
             <rect x="8" y="6" width="13" height="1.5" rx=".75" fill="#426287" />
@@ -76,7 +105,7 @@ const Navbar = ({ setShowLogin }) => {
           <NavLink to='/' onClick={() => setOpen(false)}>Home</NavLink>
           <NavLink to='/products' onClick={() => setOpen(false)}>All Products</NavLink>
           <NavLink to='/' onClick={() => setOpen(false)}>Contact</NavLink>
-          
+
           <form onSubmit={handleSearch} className="w-full mt-2">
             <div className="flex items-center text-sm gap-2 border border-gray-300 px-3 rounded-full">
               <input
@@ -95,15 +124,35 @@ const Navbar = ({ setShowLogin }) => {
             </div>
           </form>
 
-          <button 
-            onClick={() => {
-              setShowLogin(true);
-              setOpen(false);
-            }} 
-            className="cursor-pointer px-6 py-2 mt-2 bg-green-500 hover:bg-green-600 transition text-white rounded-full text-sm"
-          >
-            Login
-          </button>
+          {!user ? (
+            <button
+              onClick={() => {
+                setShowLogin(true);
+                setOpen(false);
+              }}
+              className="cursor-pointer px-6 py-2 bg-green-500 hover:bg-green-600 transition text-white rounded-full text-sm mt-2"
+            >
+              Login
+            </button>
+          ) : (
+            <div className="w-full mt-2">
+              <div className="flex items-center gap-3 mb-3">
+                <img 
+                  src={user.photoURL || defaultProfileImage} 
+                  alt="Profile" 
+                  className="w-10 h-10 rounded-full object-cover"
+                  onError={(e) => {
+                    e.target.onerror = null; 
+                    e.target.src = defaultProfileImage;
+                  }}
+                />
+                <span>{user.displayName || 'User'}</span>
+              </div>
+              <div className="px-4 py-2 hover:bg-gray-100 cursor-pointer" onClick={() => { navigate('/profile'); setOpen(false); }}>My Profile</div>
+              <div className="px-4 py-2 hover:bg-gray-100 cursor-pointer" onClick={() => { navigate('/orders'); setOpen(false); }}>My Orders</div>
+              <div className="px-4 py-2 hover:bg-gray-100 cursor-pointer" onClick={() => { handleLogout(); setOpen(false); }}>Logout</div>
+            </div>
+          )}
         </div>
       </nav>
     </div>
