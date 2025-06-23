@@ -1,31 +1,28 @@
-import React, { useEffect, useState } from 'react'
-import { useAppContext } from '../../context/AppContex'
+import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
-const SellerLogin = () => {
-    const { isSeller, setSeller, navigate } = useAppContext()
+const SellerLogin = ({ setIsSellerAuthenticated }) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+    const navigate = useNavigate();
 
     const onSubmitHandler = async (event) => {
         event.preventDefault();
+        setIsLoading(true);
         try {
             // Here you should add actual authentication logic
             // For now, we'll just set the seller status directly
-            setSeller(true); // Make sure this is properly updating the context state
-            navigate("/seller"); // Navigate directly after setting seller status
+            setIsSellerAuthenticated(true); // This updates the state in App component
+            navigate("/seller"); // Navigate to seller dashboard
         } catch (error) {
             console.error("Login failed:", error);
+        } finally {
+            setIsLoading(false);
         }
     }
 
-    // This useEffect might not be necessary if you navigate directly in onSubmitHandler
-    useEffect(() => {
-        if (isSeller) {
-            navigate("/seller");
-        }
-    }, [isSeller, navigate])
-
-    return !isSeller && (
+    return (
         <form onSubmit={onSubmitHandler} className='min-h-screen flex items-center text-sm text-gray-600'>
             <div className='flex flex-col gap-5 m-auto items-start p-8 py-12 min-w-80 sm:min-w-88 rounded-lg shadow-xl border border-gray-200'>
                 <p className='text-2xl font-medium m-auto'><span className='text-primary'>seller</span>Login</p>
@@ -54,9 +51,10 @@ const SellerLogin = () => {
                 </div>
                 <button 
                     type='submit' 
-                    className='w-full bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-md transition duration-200'
+                    className="bg-green-500 hover:bg-green-600 transition-all text-white w-full py-2 rounded-md cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed"
+                    disabled={isLoading}
                 >
-                    Login
+                    {isLoading ? "Processing..." : "Login"}
                 </button>
             </div>
         </form>

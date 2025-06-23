@@ -5,22 +5,24 @@ import { Route, Routes, useLocation } from 'react-router-dom'
 import Home from './pages/Home'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import Login from './components/Login' // Make sure to import your Login component
-import AllProducts from './pages/AllProducts' // Import your AllProducts page
+import Login from './components/Login'
+import AllProducts from './pages/AllProducts'
 import ProductCategory from './pages/ProductCategory'
 import ProductDetails from './pages/ProductDetails'
 import Cart from './pages/Cart'
 import AddAddress from './pages/AddAddress'
 import SellerLogin from './components/seller/SellerLogin'
+import SellerLayout from './pages/seller/SellerLayout'
 
 const App = () => {
   const location = useLocation()
   const isSellerPath = location.pathname.includes('/seller')
-  const [showLogin, setShowLogin] = useState(false) // State to manage login visibility
+  const [showLogin, setShowLogin] = useState(false)
+  const [isSellerAuthenticated, setIsSellerAuthenticated] = useState(false)
 
   return (
-    <div>
-      {!isSellerPath && <Navbar setShowLogin={setShowLogin} />} {/* Pass setShowLogin to Navbar */}
+    <div className={`${isSellerPath ? "" : "px-6 md:px-16 lg:px-24 xl:px-32"}`}>
+      {!isSellerPath && <Navbar setShowLogin={setShowLogin} />}
       
       {/* Login Modal */}
       {showLogin && (
@@ -37,17 +39,25 @@ const App = () => {
         </div>
       )}
 
-      <div className={`${isSellerPath ? "" : "px-6 md:px-16 lg:px-24 xl:px-32"} `}>
+      <div className={`${isSellerPath ? "" : "px-6 md:px-16 lg:px-24 xl:px-32"}`}>
         <Routes>
           <Route path="/" element={<Home />} />
-          {/* Add other routes here */}
           <Route path="/products" element={<AllProducts />} />
           <Route path="/products/:category" element={<ProductCategory />} />
           <Route path="/product/:id" element={<ProductDetails />} />
           <Route path="/product/:category/:id" element={<ProductDetails />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/add-address" element={<AddAddress />} />
-          <Route path="/seller" element={<SellerLogin />} />
+          <Route 
+            path="/seller/*" 
+            element={
+              isSellerAuthenticated ? (
+                <SellerLayout setIsSellerAuthenticated={setIsSellerAuthenticated} />
+              ) : (
+                <SellerLogin setIsSellerAuthenticated={setIsSellerAuthenticated} />
+              )
+            } 
+          />
         </Routes>
       </div>
 
