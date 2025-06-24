@@ -13,6 +13,9 @@ import Cart from './pages/Cart'
 import AddAddress from './pages/AddAddress'
 import SellerLogin from './components/seller/SellerLogin'
 import SellerLayout from './pages/seller/SellerLayout'
+import ProductList from './pages/seller/ProductList'
+import AddProduct from './pages/seller/AddProduct'
+import Orders from './pages/seller/Orders'
 
 const App = () => {
   const location = useLocation()
@@ -57,7 +60,11 @@ const App = () => {
                 <SellerLogin setIsSellerAuthenticated={setIsSellerAuthenticated} />
               )
             } 
-          />
+          >
+            <Route index element={<AddProduct />} />
+            <Route path='product-list' element={<ProductList />} />
+            <Route path='orders' element={<Orders />} />
+          </Route>
         </Routes>
       </div>
 
