@@ -1,7 +1,7 @@
 import React from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 
-const SellerLayout = () => {
+const SellerLayout = ({ setIsSellerAuthenticated }) => {
   const navigate = useNavigate();
 
   const dashboardIcon = (
@@ -70,12 +70,12 @@ const SellerLayout = () => {
 
   const sidebarLinks = [
     { name: "Add Product", path: "/seller", icon: dashboardIcon },
-    { name: "Product List", path: "/seller/producLlist", icon: overviewIcon },
+    { name: "Product List", path: "/seller/product-list", icon: overviewIcon },
     { name: "Orders", path: "/seller/orders", icon: chatIcon },
   ];
 
   const handleLogout = () => {
-    // Add your logout logic here
+    setIsSellerAuthenticated(false);
     navigate("/");
   };
 
@@ -114,7 +114,7 @@ const SellerLayout = () => {
             {sidebarLinks.map((item, index) => (
               <NavLink
                 to={item.path}
-                end={item.path === "/seller"} // Add 'end' prop for exact matching on root path
+                end={item.path === "/seller"}
                 key={index}
                 className={({ isActive }) =>
                   `flex items-center py-3 px-4 gap-3 transition-colors ${
@@ -124,15 +124,12 @@ const SellerLayout = () => {
                   }`
                 }
                 onClick={(e) => {
-                  // Prevent navigation if already on the current page
                   if (window.location.pathname === item.path) {
                     e.preventDefault();
                   }
                 }}
               >
-                {(
-                  { isActive } // Destructure isActive here for the icon
-                ) => (
+                {({ isActive }) => (
                   <>
                     <span
                       className={`text-lg ${
