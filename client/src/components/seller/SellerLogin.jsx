@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
@@ -9,11 +9,21 @@ const SellerLogin = ({ setIsSellerAuthenticated }) => {
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
-    // Hardcoded admin credentials (for demo purposes - in production, use environment variables)
+    // Hardcoded admin credentials (for demo/demo only)
     const ADMIN_CREDENTIALS = {
         email: 'admin@example.com',
         password: 'admin123'
     };
+
+    // Persist seller authentication on refresh
+    useEffect(() => {
+        const token = localStorage.getItem('sellerToken');
+        if (token) {
+            setIsSellerAuthenticated(true);
+            navigate("/seller");
+        }
+        // eslint-disable-next-line
+    }, []);
 
     const onSubmitHandler = async (event) => {
         event.preventDefault();

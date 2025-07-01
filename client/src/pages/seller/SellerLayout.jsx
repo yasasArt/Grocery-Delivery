@@ -76,6 +76,7 @@ const SellerLayout = ({ setIsSellerAuthenticated }) => {
 
   const handleLogout = () => {
     setIsSellerAuthenticated(false);
+    localStorage.removeItem('sellerToken');
     navigate("/");
   };
 
