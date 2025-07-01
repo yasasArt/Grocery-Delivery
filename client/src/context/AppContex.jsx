@@ -2,7 +2,7 @@ import { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-axios.defaults.withCredentials = true; // Enable sending cookies with requests
+axios.defaults.withCredentials = true;
 axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL || "http://localhost:4000/api";
 
 export const AppContext = createContext({ getcartCount: () => 0 });
@@ -14,8 +14,22 @@ export const AppProvider = ({children}) => {
     const [showUserLogin, setShowUserLogin] = useState(true);
 
     const [cartItems, setCartItems] = useState([]);
-    const [searchQuery, setSearchQuery] = useState({});
+    const [searchQuery, setSearchQuery] = useState('');
     const [products, setProducts] = useState([]);
+
+    //fetch seller status
+    const fetchSeller = async () => {
+        try {
+            const { data } = await axios.get("/api/seller/is-seller");
+            if (data.success) {
+                setIsSeller(true);
+            } else {
+                setIsSeller(false);
+            }
+        } catch (error) {
+            setIsSeller(false)
+        }
+    }
 
     // Get cart Item count
     const getcartCount = () => {
@@ -30,10 +44,12 @@ export const AppProvider = ({children}) => {
     const getCartAmount = () => {
         let totalAmount = 0;
         for (const item of cartItems) {
-            // If cartItems is an array of objects with id and quantity
-            let itemInfo = products.find(product => product._id === item.id);
+            // Find product by id or _id
+            let itemInfo = products.find(product => product._id === item.id || product.id === item.id);
             if (itemInfo && item.quantity > 0){
-                totalAmount += itemInfo.price * item.quantity;
+                // Use offerPrice or price
+                const price = itemInfo.offerPrice || itemInfo.price || 0;
+                totalAmount += price * item.quantity;
             }
         }
         return Math.floor(totalAmount * 100) / 100; 
@@ -42,9 +58,9 @@ export const AppProvider = ({children}) => {
     useEffect(() => {
         // Replace this with your actual data fetching logic
         const sampleProducts = [
-            { _id: 1, name: 'Apple', category: 'fruit', price: 1.99, image: 'apple.jpeg' },
-            { _id: 2, name: 'Banana', category: 'fruit', price: 0.99, image: 'banana.jpeg' },
-            { _id: 3, name: 'Carrot', category: 'vegetable', price: 0.49, image: 'carrot.jpeg' },
+            { _id: 1, name: 'Apple', category: 'fruit', price: 1.99, offerPrice: 1.49, image: 'apple.jpeg' },
+            { _id: 2, name: 'Banana', category: 'fruit', price: 0.99, offerPrice: 0.79, image: 'banana.jpeg' },
+            { _id: 3, name: 'Carrot', category: 'vegetable', price: 0.49, offerPrice: 0.39, image: 'carrot.jpeg' },
             // Add more sample products as needed
         ];
         setProducts(sampleProducts);
@@ -53,7 +69,7 @@ export const AppProvider = ({children}) => {
     return (
         <AppContext.Provider value={{
             navigate, user, setUser, setIsSeller, isSeller, cartItems, setCartItems,
-            searchQuery, setSearchQuery, getcartCount, getCartAmount, products
+            searchQuery, setSearchQuery, getcartCount, getCartAmount, products, fetchSeller
         }}>
             {children}
         </AppContext.Provider>
