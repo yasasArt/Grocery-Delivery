@@ -1,5 +1,9 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
+axios.defaults.withCredentials = true; // Enable sending cookies with requests
+axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL || "http://localhost:4000/api";
 
 export const AppContext = createContext({ getcartCount: () => 0 });
 

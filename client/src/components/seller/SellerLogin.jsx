@@ -1,5 +1,7 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const SellerLogin = ({ setIsSellerAuthenticated }) => {
     const [email, setEmail] = useState("");
@@ -7,20 +9,44 @@ const SellerLogin = ({ setIsSellerAuthenticated }) => {
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
+    // Hardcoded admin credentials (for demo purposes - in production, use environment variables)
+    const ADMIN_CREDENTIALS = {
+        email: 'admin@example.com',
+        password: 'admin123'
+    };
+
     const onSubmitHandler = async (event) => {
         event.preventDefault();
         setIsLoading(true);
+
         try {
-            // Here you should add actual authentication logic
-            // For now, we'll just set the seller status directly
-            setIsSellerAuthenticated(true); // This updates the state in App component
-            navigate("/seller"); // Navigate to seller dashboard
+            // Check if it's the admin login
+            if (email === ADMIN_CREDENTIALS.email && password === ADMIN_CREDENTIALS.password) {
+                setIsSellerAuthenticated(true);
+                localStorage.setItem('sellerToken', 'admin-auth-token'); // Store auth token
+                navigate("/seller");
+                toast.success("Admin login successful");
+                return;
+            }
+
+            // Regular seller login
+            const { data } = await axios.post("/api/seller/login", { email, password });
+            
+            if (data.success) {
+                setIsSellerAuthenticated(true);
+                localStorage.setItem('sellerToken', data.token); // Store the token from backend
+                navigate("/seller");
+                toast.success("Login successful");
+            } else {
+                toast.error(data.message || "Invalid credentials");
+            }
         } catch (error) {
-            console.error("Login failed:", error);
+            console.error("Login error:", error);
+            toast.error(error.response?.data?.message || "Login failed. Please try again.");
         } finally {
             setIsLoading(false);
         }
-    }
+    };
 
     return (
         <form onSubmit={onSubmitHandler} className='min-h-screen flex items-center text-sm text-gray-600'>
@@ -58,7 +84,7 @@ const SellerLogin = ({ setIsSellerAuthenticated }) => {
                 </button>
             </div>
         </form>
-    )
-}
+    );
+};
 
-export default SellerLogin
+export default SellerLogin;
