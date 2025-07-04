@@ -30,19 +30,19 @@ export const sellerLogin = async (req, res) => {
 //seller isAuth : /api/seller/is-auth
 export const isSellerAuth = async (req, res) => {
     try {
-        return res.json({ success: true});
+        return res.json({ success: true });
     }
     catch (error) {
         console.log(error.message);
         res.json({ success: false, message: error.message });
     }
-
 }
 
-//logout user : /api/user/logout
+//logout seller : /api/seller/logout
 export const sellerLogout = async (req, res) => {
     try {
-        res.clearCookie('token', {
+        // Fix: clear the correct cookie for seller (should match the cookie set in sellerLogin)
+        res.clearCookie('sellerToken', {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',

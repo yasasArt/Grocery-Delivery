@@ -1,5 +1,3 @@
-
-
 //Add product : /api/product/add
 export const addProduct = async (req, res) => {
     try {
@@ -46,25 +44,23 @@ export const productList = async (req, res) => {
 //Get single product : /api/product/id
 export const productById = async (req, res) => {
     try {
-        const { id } = req.body
-        const product = await Product.findById(id)
-        res.json({ success: true, products })
-    }catch (error) {
+        const { id } = req.body;
+        const product = await Product.findById(id);
+        res.json({ success: true, product }); // Fix: return 'product', not 'products'
+    } catch (error) {
         console.log(error.message);
         res.json({ success: false, message: error.message });
     }
-
 }
 
 //Get single product : /api/product/stock
 export const changeStock = async (req, res) => {
     try {
-        const { id, inStock } = req.body
-        await Product.findByIdAndUpdate(id, { inStock })
+        const { id, inStock } = req.body;
+        await Product.findByIdAndUpdate(id, { inStock });
         res.json({ success: true, message: 'Stock updated successfully' });
     } catch (error) {
         console.log(error.message);
         res.json({ success: false, message: error.message });
     }
-
 }

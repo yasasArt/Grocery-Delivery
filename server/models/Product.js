@@ -1,17 +1,16 @@
 import mongoose from 'mongoose';
 
 const productSchema = new mongoose.Schema({
+    name: { type: String, required: true },
+    description: { type: Array, required: true },
+    price: { type: Number, required: true },
+    offerPrice: { type: Number, required: true },
+    images: { type: Array, required: true }, // Fix: should be 'images' (array of URLs/paths)
+    category: { type: Array, required: true }, // Fix: should be a string, not array
+    inStock: { type: Boolean, default: true },
+}, { timestamps: true });
 
-        name: { type: String, required: true },
-        description: { type: Array, required: true},
-        price: { type: Number, required: true }, 
-        offerPrice: { type: Number, required: true },
-        image: { type: Array, required: true },
-        category: { type: Array, required: true },
-        inStock: { type: Boolean, default: true },
-    }, {timestamps:true});  // Added timestamps for created/updated dates
-    
-    const product = mongoose.models.product || mongoose.model('product', productSchema);
-    
-    export default product;
+const Product = mongoose.models.Product || mongoose.model('Product', productSchema);
+
+export default Product;
 

@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL || "http://localhost:4000/api";
@@ -11,7 +12,7 @@ export const AppProvider = ({children}) => {
     const navigate = useNavigate();
     const [user, setUser] = useState(null);
     const [isSeller, setIsSeller] = useState(false);
-    const [showUserLogin, setShowUserLogin] = useState(true);
+    const [showUserLogin, setShowUserLogin] = useState(false);
 
     const [cartItems, setCartItems] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
@@ -28,6 +29,20 @@ export const AppProvider = ({children}) => {
             }
         } catch (error) {
             setIsSeller(false)
+        }
+    }
+
+    // Fetch All products
+    const fetchProducts = async () => {
+        try {
+            const { data } = await axios.get("/api/product/list");
+            if (data.success) {
+                setProducts(data.products);
+            } else {
+                toast.error(data.message)
+            }
+        } catch (error) {
+            toast.error(error.message)
         }
     }
 
@@ -69,7 +84,7 @@ export const AppProvider = ({children}) => {
     return (
         <AppContext.Provider value={{
             navigate, user, setUser, setIsSeller, isSeller, cartItems, setCartItems,
-            searchQuery, setSearchQuery, getcartCount, getCartAmount, products, fetchSeller
+            searchQuery, setSearchQuery, getcartCount, getCartAmount, products, fetchSeller,fetchProducts
         }}>
             {children}
         </AppContext.Provider>
