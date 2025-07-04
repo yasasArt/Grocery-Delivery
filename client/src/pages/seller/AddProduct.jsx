@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { categories } from '../../components/Categories';
 import { useAppContext } from '../../context/AppContex';
 import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 const AddProduct = () => {
   const [files, setFiles] = useState([]);
@@ -12,6 +13,7 @@ const AddProduct = () => {
   const [offerPrice, setOfferPrice] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const fileInputRefs = useRef(Array(4).fill(null));
+  const navigate = useNavigate();
 
   const { axios } = useAppContext();
 
@@ -38,7 +40,7 @@ const AddProduct = () => {
     const updatedFiles = [...files];
     updatedFiles[index] = null;
     setFiles(updatedFiles);
-    
+
     if (fileInputRefs.current[index]) {
       fileInputRefs.current[index].value = '';
     }
@@ -46,8 +48,7 @@ const AddProduct = () => {
 
   const onSubmitHandler = async (event) => {
     event.preventDefault();
-    
-    // Basic validation
+
     if (!name || !description || !category || !price) {
       toast.error('Please fill all required fields');
       return;
@@ -72,7 +73,7 @@ const AddProduct = () => {
 
       const formData = new FormData();
       formData.append('productData', JSON.stringify(productData));
-      
+
       validFiles.forEach(file => {
         formData.append('images', file);
       });
@@ -83,7 +84,6 @@ const AddProduct = () => {
 
       if (data.success) {
         toast.success('Product Added');
-        // Reset form
         setName('');
         setDescription('');
         setCategory('');
@@ -93,6 +93,7 @@ const AddProduct = () => {
         fileInputRefs.current.forEach(ref => {
           if (ref) ref.value = '';
         });
+        navigate('/seller/product-list'); // Navigate to product list page after success
       } else {
         toast.error(data.message || 'Failed to add product');
       }
@@ -226,10 +227,10 @@ const AddProduct = () => {
             />
           </div>
         </div>
-        <button 
-          type="submit" 
+        <button
+          type="submit"
           className="px-8 py-2.5 bg-green-500 text-white font-medium rounded cursor-pointer disabled:opacity-50"
-          disabled={isLoading}
+          disabled={isLoading ? true : false}
         >
           {isLoading ? 'Uploading...' : 'ADD'}
         </button>

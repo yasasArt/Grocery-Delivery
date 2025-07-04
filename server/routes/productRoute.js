@@ -1,12 +1,13 @@
 import express from 'express';
-import {upload} from '../configs/multer.js';
+import { upload } from '../configs/multer.js';
 import authSeller from '../middlewares/authSeller.js';
 import { addProduct, changeStock, productById, productList } from '../controllers/productController.js';
 
 const productRouter = express.Router();
 
-// Fix: use upload.array('image') -- 'image' is the field name as a string
-productRouter.post('/add', upload.array('image'), authSeller, addProduct);
+// The field name should match the one used in your client FormData append (e.g., 'images' or 'image')
+// If your client uses formData.append('images', file), use 'images' here:
+productRouter.post('/add', upload.array('images'), authSeller, addProduct);
 productRouter.get('/list', productList);
 productRouter.get('/id', productById);
 productRouter.put('/stock', authSeller, changeStock);

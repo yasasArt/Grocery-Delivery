@@ -1,5 +1,6 @@
 import React from 'react';
 import { useAppContext } from '../../context/AppContex';
+import toast from 'react-hot-toast';
 
 // Category data with selling prices
 const categories = [
@@ -16,12 +17,26 @@ const categories = [
 ];
 
 const ProductList = () => {
-  const { products, currency } = useAppContext();
+  const { products, axios, fetchProducts } = useAppContext();
+  const currency = "";
 
-  const getCategoryImage = (categoryName) => {
-    const category = categories.find(cat => cat.name === categoryName);
-    // Assuming images are in the public/images directory
-    return category ? `/images/${category.image}` : '/images/placeholder.jpeg';
+  const toggleStock = async (id, inStock) => {
+    try {
+      // Use PUT and send data as { id, inStock }
+      await axios.put('/api/product/stock', { id, inStock });
+      // Always show toast on click
+      toast.success("Stock Updated");
+      if (typeof fetchProducts === "function") fetchProducts();
+    } catch (error) {
+      toast.error(error?.response?.data?.message || error.message || "Failed to update stock");
+    }
+  };
+
+  const getCategoryImage = (product) => {
+    if (product.image) {
+      return product.image.startsWith('http') ? product.image : `/images/${product.image}`;
+    }
+    return '/images/placeholder.jpeg';
   };
 
   const getCategoryPrice = (categoryName) => {
@@ -46,12 +61,12 @@ const ProductList = () => {
             </thead>
             <tbody className="text-sm text-gray-500">
               {products.map((product) => (
-                <tr key={product.id} className="border-t border-gray-500/20 hover:bg-gray-50">
+                <tr key={product._id || product.id} className="border-t border-gray-500/20 hover:bg-gray-50">
                   <td className="md:px-4 pl-2 md:pl-4 py-3 flex items-center space-x-3 truncate">
                     <div className="border border-gray-300 rounded p-1">
                       <img
-                        src={getCategoryImage(product.category)}
-                        alt={product.category}
+                        src={getCategoryImage(product)}
+                        alt={product.name}
                         className="w-12 h-12 object-contain rounded"
                         onError={(e) => {
                           e.target.onerror = null;
@@ -64,15 +79,20 @@ const ProductList = () => {
                   <td className="px-4 py-3">{product.category}</td>
                   <td className="px-4 py-3">
                     {currency}
-                    {getCategoryPrice(product.category).toFixed(2)}
+                    {(product.price || 0).toFixed(2)}
                   </td>
                   <td className="px-4 py-3">
                     {currency}
-                    {product.offerPrice}
+                    {(product.offerPrice || 0).toFixed(2)}
                   </td>
                   <td className="px-4 py-3">
                     <label className="relative inline-flex items-center cursor-pointer text-gray-900 gap-3">
-                      <input type="checkbox" className="sr-only peer" />
+                      <input
+                        type="checkbox"
+                        checked={!!product.inStock}
+                        onChange={e => toggleStock(product._id || product.id, e.target.checked)}
+                        className="sr-only peer"
+                      />
                       <div className="w-12 h-7 bg-slate-300 rounded-full peer peer-checked:bg-blue-600 transition-colors duration-200"></div>
                       <span className="dot absolute left-1 top-1 w-5 h-5 bg-white rounded-full transition-transform duration-200 ease-in-out peer-checked:translate-x-5"></span>
                     </label>
