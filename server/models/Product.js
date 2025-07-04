@@ -5,8 +5,8 @@ const productSchema = new mongoose.Schema({
     description: { type: Array, required: true },
     price: { type: Number, required: true },
     offerPrice: { type: Number, required: true },
-    images: { type: Array, required: true }, // Fix: should be 'images' (array of URLs/paths)
-    category: { type: Array, required: true }, // Fix: should be a string, not array
+    images: { type: [String], required: true }, // Fix: should be 'images' (array of URLs/paths)
+    category: { type: String, required: true }, // Fix: should be a string, not array
     inStock: { type: Boolean, default: true },
 }, { timestamps: true });
 

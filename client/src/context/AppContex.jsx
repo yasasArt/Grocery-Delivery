@@ -28,9 +28,24 @@ export const AppProvider = ({children}) => {
                 setIsSeller(false);
             }
         } catch (error) {
-            setIsSeller(false)
+            setIsSeller(false);
         }
-    }
+    };
+
+    // Fetch user Auth Status, User Data And Cart Items
+    const fetchUser = async () => {
+        try {
+            const { data } = await axios.get("/api/user/is-auth");
+            if (data.success) {
+                setUser(data.user);
+                setCartItems(data.user.cartItems || []);
+            } else {
+                setUser(null);
+            }
+        } catch (error) {
+            setUser(null);
+        }
+    };
 
     // Fetch All products
     const fetchProducts = async () => {
@@ -39,12 +54,12 @@ export const AppProvider = ({children}) => {
             if (data.success) {
                 setProducts(data.products);
             } else {
-                toast.error(data.message)
+                toast.error(data.message);
             }
         } catch (error) {
-            toast.error(error.message)
+            toast.error(error.message);
         }
-    }
+    };
 
     // Get cart Item count
     const getcartCount = () => {
@@ -71,6 +86,9 @@ export const AppProvider = ({children}) => {
     };
 
     useEffect(() => {
+        fetchSeller();
+        fetchUser();
+        fetchProducts();
         // Replace this with your actual data fetching logic
         const sampleProducts = [
             { _id: 1, name: 'Apple', category: 'fruit', price: 1.99, offerPrice: 1.49, image: 'apple.jpeg' },
@@ -84,7 +102,7 @@ export const AppProvider = ({children}) => {
     return (
         <AppContext.Provider value={{
             navigate, user, setUser, setIsSeller, isSeller, cartItems, setCartItems,
-            searchQuery, setSearchQuery, getcartCount, getCartAmount, products, fetchSeller,fetchProducts
+            searchQuery, setSearchQuery, getcartCount, getCartAmount, products, fetchSeller,fetchProducts,fetchUser
         }}>
             {children}
         </AppContext.Provider>
