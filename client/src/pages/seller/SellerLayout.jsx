@@ -1,5 +1,6 @@
 import React from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import axios from "axios"; // Add axios import
 
 const SellerLayout = ({ setIsSellerAuthenticated }) => {
   const navigate = useNavigate();
@@ -74,10 +75,27 @@ const SellerLayout = ({ setIsSellerAuthenticated }) => {
     { name: "Orders", path: "/seller/orders", icon: chatIcon },
   ];
 
-  const handleLogout = () => {
-    setIsSellerAuthenticated(false);
-    localStorage.removeItem('sellerToken');
-    navigate("/");
+  const handleLogout = async () => {
+    try {
+      const { data } = await axios.get("/api/seller/logout");
+      if (data.success) {
+        setIsSellerAuthenticated(false);
+        localStorage.removeItem('sellerToken');
+        navigate("/");
+        // If you're using toast notifications, you would do something like:
+        // toast.success(data.message);
+      } else {
+        console.error(data.message);
+        // toast.error(data.message);
+      }
+    } catch (error) {
+      console.error(error.message);
+      // toast.error(error.message);
+      // Fallback to local logout if API fails
+      setIsSellerAuthenticated(false);
+      localStorage.removeItem('sellerToken');
+      navigate("/");
+    }
   };
 
   return (
@@ -107,6 +125,7 @@ const SellerLayout = ({ setIsSellerAuthenticated }) => {
         </div>
       </header>
 
+      {/* Rest of your component remains the same */}
       {/* Main Content */}
       <div className="flex flex-1">
         {/* Sidebar */}

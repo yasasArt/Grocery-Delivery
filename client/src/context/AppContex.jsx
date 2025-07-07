@@ -21,7 +21,7 @@ export const AppProvider = ({children}) => {
     //fetch seller status
     const fetchSeller = async () => {
         try {
-            const { data } = await axios.get("/api/seller/is-seller");
+            const { data } = await axios.get("/seller/is-seller");
             if (data.success) {
                 setIsSeller(true);
             } else {
@@ -35,7 +35,7 @@ export const AppProvider = ({children}) => {
     // Fetch user Auth Status, User Data And Cart Items
     const fetchUser = async () => {
         try {
-            const { data } = await axios.get("/api/user/is-auth");
+            const { data } = await axios.get("/user/is-auth");
             if (data.success) {
                 setUser(data.user);
                 setCartItems(data.user.cartItems || []);
