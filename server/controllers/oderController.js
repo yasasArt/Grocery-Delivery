@@ -10,7 +10,7 @@ export const placeOrderCOD = async (req, res) => {
         }
         // Calculate Amount Using Items
         let amount = await items.reduce(async (acc, item) => {
-            const product = await Product.findById(item.productId);
+            const product = await Product.findById(item.product);
             return (await acc) + (product.offerprice * item.quantity); 
         },0);
         // Add Tax Charges (2%)
@@ -29,7 +29,6 @@ export const placeOrderCOD = async (req, res) => {
 
 
     }catch (error) {
-        console.log(error.message);
         res.json({ success: false, message: error.message });
     }
 
@@ -46,7 +45,6 @@ export const getUserOrders = async (req, res) => {
         res.json({ success: true, orders });
     }
     catch (error) {
-        console.log(error.message);
         res.json({ success: false, message: error.message });
     }
 }
@@ -60,7 +58,6 @@ export const getAllOrders = async (req, res) => {
         res.json({ success: true, orders });
     }
     catch (error) {
-        console.log(error.message);
         res.json({ success: false, message: error.message });
     }
 }
