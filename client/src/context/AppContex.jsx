@@ -99,6 +99,22 @@ export const AppProvider = ({children}) => {
         setProducts(sampleProducts);
     }, []);
 
+    useEffect(() => {
+        const updateCart = async () => {
+            try {
+                const { data } = await axios.post("/api/user/update", [cartItems]);
+                if (data.success) {
+                    toast.error(data.message);
+                }
+            }catch (error) {
+                toast.error(error.message);
+            }
+        }
+        if (user) {
+            updateCart();
+        }
+    },[cartItems]);
+    
     return (
         <AppContext.Provider value={{
             navigate, user, setUser, setIsSeller, isSeller, cartItems, setCartItems,
