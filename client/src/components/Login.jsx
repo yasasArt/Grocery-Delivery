@@ -8,11 +8,30 @@ const LoginForm = () => {
   const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
-  const navigate = useNavigate();
-  const { setUser, setShowUserLogin } = useAppContext();
+  //const navigate = useNavigate();
+  const { setUser, setShowUserLogin, axios, navigate} = useAppContext();
 
   const onSubmitHandler = async (event) => {
-    event.preventDefault();
+    // try {
+    //   event.preventDefault();
+
+    //   const {data} = await axios.post(`/api/user/${state}`,{name,email,password
+
+    //   });
+    //   if (data.success) {
+    //     navigate('/');
+    //     setUser(data.user);
+    //     setShowUserLogin(false);
+    //   }else {
+    //     toast.error(data.message);
+    //   }
+
+      
+    // } catch (error) {
+    //   toast.error(error.message);
+      
+    // }
+    
     try {
       // Use window.axios or import axios directly if not provided by context
       const axios = window.axios || (await import('axios')).default;

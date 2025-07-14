@@ -1,12 +1,29 @@
 import React, { useState } from 'react';
 import { useNavigate, NavLink } from 'react-router-dom';
 import { useAppContext } from '../context/AppContex';
+import toast from 'react-hot-toast';
 
 const Navbar = ({ setShowLogin }) => {
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
-  const { getcartCount, user, logout } = useAppContext();
+  const { getcartCount, user, axios } = useAppContext();
+
+  const logout = async () => {
+  try {
+    const {data} =await axios.get('/api/user/logout');
+    if (data.success) {
+      toast.success("Logged out successfully");
+      setUser(null);
+      navigate('/');
+    }else {
+      toast.error(data.message);
+    }
+  } catch (error) {
+     toast.error(error.message);
+  }
+  
+  }
 
   const handleSearch = (e) => {
     e.preventDefault();
